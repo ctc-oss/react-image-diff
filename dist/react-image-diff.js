@@ -62,6 +62,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _react = __webpack_require__(1);
@@ -243,6 +245,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	};
 
+	var animationConfig = function animationConfig(animation) {
+	  if (!animation) return null;
+	  if (typeof animation === "boolean") {
+	    return {};
+	  } else if ((typeof animation === "undefined" ? "undefined" : _typeof(animation)) === "object") {
+	    return animation;
+	  }
+
+	  throw Error("[animation] prop must be boolean or an actual animation config object");
+	};
+
 	var ImageDiff = function ImageDiff(props) {
 	  var type = props.type,
 	      height = props.height,
@@ -251,7 +264,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value = _props$value === undefined ? 0 : _props$value,
 	      style = props.style,
 	      slider = props.slider,
-	      animate = props.animate,
 	      animation = props.animation;
 
 	  var _useState = (0, _react.useState)(_extends({}, style, { height: height, width: width })),
@@ -265,16 +277,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      setDiffValue = _useState4[1];
 
 	  _react2.default.useEffect(function () {
-	    if (animate || animation) {
-	      var _ref4 = animation || {},
-	          _ref4$start = _ref4.start,
-	          start = _ref4$start === undefined ? diffValue : _ref4$start,
-	          _ref4$end = _ref4.end,
-	          end = _ref4$end === undefined ? 1 : _ref4$end,
-	          _ref4$step = _ref4.step,
-	          step = _ref4$step === undefined ? 0.02 : _ref4$step,
-	          _ref4$delay = _ref4.delay,
-	          delay = _ref4$delay === undefined ? 50 : _ref4$delay;
+	    var _animation = animationConfig(animation);
+	    if (_animation) {
+	      var _animation$start = _animation.start,
+	          start = _animation$start === undefined ? diffValue : _animation$start,
+	          _animation$end = _animation.end,
+	          end = _animation$end === undefined ? 1 : _animation$end,
+	          _animation$step = _animation.step,
+	          step = _animation$step === undefined ? 0.02 : _animation$step,
+	          _animation$delay = _animation.delay,
+	          delay = _animation$delay === undefined ? 50 : _animation$delay;
+
 
 	      if (value > end && start + step <= end || value < end && start + step >= end) {
 	        setDiffValue(end);
@@ -282,7 +295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return setDiffValue(start + step);
 	      }, delay);
 	    }
-	  }, [value, diffValue, animate, animation]);
+	  }, [value, diffValue, animation]);
 
 	  var handleImgLoad = function handleImgLoad(e) {
 	    if (!height && !width) {

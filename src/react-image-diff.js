@@ -148,24 +148,28 @@ const Swipe = ({
   )
 }
 
+const animationConfig = (animation) => {
+  if (!animation) return null
+  if (typeof animation === "boolean") {
+    return {}
+  } else if (typeof animation === "object") {
+    return animation
+  }
+
+  throw Error(
+    "[animation] prop must be boolean or an actual animation config object"
+  )
+}
+
 const ImageDiff = (props) => {
-  const {
-    type,
-    height,
-    width,
-    value = 0,
-    style,
-    slider,
-    animate,
-    animation,
-  } = props
+  const { type, height, width, value = 0, style, slider, animation } = props
   const [imageStyle, setImageStyle] = useState({ ...style, height, width })
   const [diffValue, setDiffValue] = useState(value)
 
   React.useEffect(() => {
-    if (animate || animation) {
-      const { start = diffValue, end = 1, step = 0.02, delay = 50 } =
-        animation || {}
+    const _animation = animationConfig(animation)
+    if (_animation) {
+      const { start = diffValue, end = 1, step = 0.02, delay = 50 } = _animation
 
       if (
         (value > end && start + step <= end) ||
@@ -174,7 +178,7 @@ const ImageDiff = (props) => {
         setDiffValue(end)
       } else setTimeout(() => setDiffValue(start + step), delay)
     }
-  }, [value, diffValue, animate, animation])
+  }, [value, diffValue, animation])
 
   const handleImgLoad = (e) => {
     if (!height && !width) {
