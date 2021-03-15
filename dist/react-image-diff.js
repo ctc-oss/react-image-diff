@@ -52,13 +52,17 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -66,235 +70,280 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var bgImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAABlBMVEX5+fn///8pDrwNAAAAFElEQVQI12NgsP/AQAz+f4CBGAwAJIIdTTn0+w0AAAAASUVORK5CYII=";
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	var dimension = function dimension(x) {
+	  return isNaN(x) || !x ? null : x;
+	};
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	var Difference = function Difference(_ref) {
+	  var before = _ref.before,
+	      after = _ref.after,
+	      height = _ref.height,
+	      width = _ref.width,
+	      alt = _ref.alt,
+	      handleImgLoad = _ref.handleImgLoad;
 
-	var bgImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAABlBMVEX5+fn///8pDrwNAAAAFElEQVQI12NgsP/AQAz+f4CBGAwAJIIdTTn0+w0AAAAASUVORK5CYII=';
+	  var style = {
+	    position: "relative"
+	  };
+	  var beforeStyle = {
+	    position: "absolute",
+	    top: 0,
+	    left: 0
+	  };
+	  var afterStyle = _extends({}, beforeStyle);
 
-	var ImageDiff = function (_Component) {
-	  _inherits(ImageDiff, _Component);
+	  return _react2.default.createElement(
+	    "div",
+	    { className: "ImageDiff_inner--difference", style: style },
+	    _react2.default.createElement(
+	      "div",
+	      { className: "ImageDiff__before", style: beforeStyle },
+	      _react2.default.createElement("img", {
+	        src: before,
+	        alt: alt,
+	        height: height,
+	        width: width,
+	        onLoad: handleImgLoad
+	      })
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      { className: "ImageDiff__after", style: afterStyle },
+	      _react2.default.createElement("img", {
+	        src: after,
+	        alt: alt,
+	        height: height,
+	        width: width,
+	        style: { mixBlendMode: "difference" },
+	        onLoad: handleImgLoad
+	      })
+	    )
+	  );
+	};
 
-	  function ImageDiff() {
-	    _classCallCheck(this, ImageDiff);
+	var Fade = function Fade(_ref2) {
+	  var before = _ref2.before,
+	      after = _ref2.after,
+	      height = _ref2.height,
+	      width = _ref2.width,
+	      alt = _ref2.alt,
+	      handleImgLoad = _ref2.handleImgLoad,
+	      value = _ref2.value;
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageDiff).call(this));
+	  var style = {
+	    backgroundImage: "url(" + bgImage + ")",
+	    height: height,
+	    width: width,
+	    margin: 0,
+	    position: "absolute"
+	  };
 
-	    _this.renderFade = function () {
-	      var style = {
-	        backgroundImage: 'url(' + bgImage + ')',
-	        height: _this.state.height,
-	        margin: 0,
-	        position: 'absolute',
-	        width: _this.state.width
-	      };
+	  var beforeStyle = _extends({}, style);
 
-	      var beforeStyle = _extends({
-	        border: '1px solid #f77'
-	      }, style);
+	  var afterStyle = _extends({
+	    opacity: 1 - value
+	  }, style);
 
-	      var afterStyle = _extends({
-	        border: '1px solid #63c363',
-	        opacity: 1 - _this.props.value
-	      }, style);
+	  return _react2.default.createElement(
+	    "div",
+	    { className: "ImageDiff__inner--fade", style: style },
+	    _react2.default.createElement(
+	      "div",
+	      { className: "ImageDiff__before", style: beforeStyle },
+	      _react2.default.createElement("img", {
+	        src: before,
+	        alt: "",
+	        height: height,
+	        width: width,
+	        onLoad: handleImgLoad
+	      })
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      { className: "ImageDiff__after", style: afterStyle },
+	      _react2.default.createElement("img", {
+	        src: after,
+	        alt: alt,
+	        height: height,
+	        width: width,
+	        onLoad: handleImgLoad
+	      })
+	    )
+	  );
+	};
 
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'ImageDiff__inner--fade', style: style },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ImageDiff__before', style: beforeStyle },
-	          _react2.default.createElement('img', {
-	            src: _this.props.before,
-	            height: _this.props.height,
-	            width: _this.props.width,
-	            onLoad: _this.handleImgLoad
-	          })
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ImageDiff__after', style: afterStyle },
-	          _react2.default.createElement('img', {
-	            src: _this.props.after,
-	            height: _this.props.height,
-	            width: _this.props.width,
-	            onLoad: _this.handleImgLoad
-	          })
-	        )
-	      );
-	    };
+	var Swipe = function Swipe(_ref3) {
+	  var before = _ref3.before,
+	      after = _ref3.after,
+	      _ref3$height = _ref3.height,
+	      height = _ref3$height === undefined ? 0 : _ref3$height,
+	      _ref3$width = _ref3.width,
+	      width = _ref3$width === undefined ? 0 : _ref3$width,
+	      _ref3$alt = _ref3.alt,
+	      alt = _ref3$alt === undefined ? "" : _ref3$alt,
+	      handleImgLoad = _ref3.handleImgLoad,
+	      value = _ref3.value;
 
-	    _this.handleImgLoad = _this.handleImgLoad.bind(_this);
-	    return _this;
-	  }
+	  var style = {
+	    backgroundImage: "url(" + bgImage + ")",
+	    width: width,
+	    height: height,
+	    margin: 0,
+	    position: "absolute"
+	  };
 
-	  _createClass(ImageDiff, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.setState({
-	        height: this.props.height,
-	        width: this.props.width
-	      });
+	  var beforeStyle = _extends({}, style);
+
+	  var afterStyle = _extends({
+	    right: 0
+	  }, style);
+
+	  var swipePadding = 2;
+	  var swiperStyle = {
+	    borderLeft: "1px solid #999",
+	    height: height + swipePadding,
+	    margin: 0,
+	    overflow: "hidden",
+	    position: "absolute",
+	    right: -swipePadding,
+	    width: width * (1 - value)
+	  };
+
+	  return _react2.default.createElement(
+	    "div",
+	    { className: "ImageDiff__inner--swipe", style: style },
+	    _react2.default.createElement(
+	      "div",
+	      { className: "ImageDiff__before", style: beforeStyle },
+	      _react2.default.createElement("img", {
+	        src: before,
+	        alt: alt,
+	        height: dimension(height),
+	        width: dimension(width),
+	        onLoad: handleImgLoad
+	      })
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      { className: "ImageDiff--swiper", style: swiperStyle },
+	      _react2.default.createElement(
+	        "div",
+	        { className: "ImageDiff__after", style: afterStyle },
+	        _react2.default.createElement("img", {
+	          src: after,
+	          alt: "",
+	          height: dimension(height),
+	          width: dimension(width),
+	          onLoad: handleImgLoad
+	        })
+	      )
+	    )
+	  );
+	};
+
+	var ImageDiff = function ImageDiff(props) {
+	  var type = props.type,
+	      height = props.height,
+	      width = props.width,
+	      _props$value = props.value,
+	      value = _props$value === undefined ? 0 : _props$value,
+	      style = props.style,
+	      slider = props.slider,
+	      animate = props.animate,
+	      animation = props.animation;
+
+	  var _useState = (0, _react.useState)(_extends({}, style, { height: height, width: width })),
+	      _useState2 = _slicedToArray(_useState, 2),
+	      imageStyle = _useState2[0],
+	      setImageStyle = _useState2[1];
+
+	  var _useState3 = (0, _react.useState)(value),
+	      _useState4 = _slicedToArray(_useState3, 2),
+	      diffValue = _useState4[0],
+	      setDiffValue = _useState4[1];
+
+	  _react2.default.useEffect(function () {
+	    if (animate || animation) {
+	      var _ref4 = animation || {},
+	          _ref4$start = _ref4.start,
+	          start = _ref4$start === undefined ? diffValue : _ref4$start,
+	          _ref4$end = _ref4.end,
+	          end = _ref4$end === undefined ? 1 : _ref4$end,
+	          _ref4$step = _ref4.step,
+	          step = _ref4$step === undefined ? 0.02 : _ref4$step,
+	          _ref4$delay = _ref4.delay,
+	          delay = _ref4$delay === undefined ? 50 : _ref4$delay;
+
+	      if (value > end && start + step <= end || value < end && start + step >= end) {
+	        setDiffValue(end);
+	      } else setTimeout(function () {
+	        return setDiffValue(start + step);
+	      }, delay);
 	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      this.setState({
-	        height: nextProps.height || this.state.height,
-	        width: nextProps.width || this.state.width
-	      });
-	    }
-	  }, {
-	    key: 'handleImgLoad',
-	    value: function handleImgLoad(e) {
-	      if (!this.props.height && !this.props.width) {
-	        var _e$target = e.target;
-	        var height = _e$target.height;
-	        var width = _e$target.width;
+	  }, [value, diffValue, animate, animation]);
 
-	        this.setState({
-	          height: height, width: width
-	        });
+	  var handleImgLoad = function handleImgLoad(e) {
+	    if (!height && !width) {
+	      var _e$target = e.target,
+	          _height = _e$target.height,
+	          _width = _e$target.width;
+
+	      setImageStyle(_extends({}, style, { height: _height, width: _width }));
+	    }
+	  };
+
+	  var viewProps = _extends({}, props, imageStyle, {
+	    value: diffValue,
+	    handleImgLoad: handleImgLoad
+	  });
+
+	  var views = {
+	    difference: _react2.default.createElement(Difference, viewProps),
+	    fade: _react2.default.createElement(Fade, viewProps),
+	    swipe: _react2.default.createElement(Swipe, viewProps)
+	  };
+
+	  return _react2.default.createElement(
+	    "div",
+	    {
+	      style: {
+	        display: "flex",
+	        flexDirection: "column",
+	        width: imageStyle.width
 	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'ImageDiff', style: { display: 'inline-block', height: this.state.height, width: this.state.width } },
-	        this.props.type === 'difference' ? this.renderDifference() : null,
-	        this.props.type === 'fade' ? this.renderFade() : null,
-	        this.props.type === 'swipe' ? this.renderSwipe() : null
-	      );
-	    }
-	  }, {
-	    key: 'renderDifference',
-	    value: function renderDifference() {
-	      var style = {
-	        position: 'relative'
-	      };
-	      var beforeStyle = {
-	        position: 'absolute',
-	        top: 0,
-	        left: 0
-	      };
-	      var afterStyle = _extends({}, beforeStyle);
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'ImageDiff_inner--difference', style: style },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ImageDiff__before', style: beforeStyle },
-	          _react2.default.createElement('img', {
-	            src: this.props.before,
-	            height: this.props.height,
-	            width: this.props.width,
-	            onLoad: this.handleImgLoad
-	          })
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ImageDiff__after', style: afterStyle },
-	          _react2.default.createElement('img', {
-	            src: this.props.after,
-	            height: this.props.height,
-	            width: this.props.width,
-	            style: { mixBlendMode: 'difference' },
-	            onLoad: this.handleImgLoad
-	          })
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'renderSwipe',
-	    value: function renderSwipe() {
-	      var style = {
-	        backgroundImage: 'url(' + bgImage + ')',
-	        height: this.state.height,
-	        margin: 0,
-	        position: 'absolute',
-	        width: this.state.width
-	      };
-
-	      var beforeStyle = _extends({
-	        border: '1px solid #f77'
-	      }, style);
-
-	      var afterStyle = _extends({
-	        border: '1px solid #63c363',
-	        right: 0
-	      }, style);
-
-	      var swiperStyle = {
-	        borderLeft: '1px solid #999',
-	        height: this.state.height + 2,
-	        margin: 0,
-	        overflow: 'hidden',
-	        position: 'absolute',
-	        right: -2,
-	        width: this.state.width * (1 - this.props.value)
-	      };
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'ImageDiff__inner--swipe', style: style },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ImageDiff__before', style: beforeStyle },
-	          _react2.default.createElement('img', {
-	            src: this.props.before,
-	            height: this.props.height,
-	            width: this.props.width,
-	            onLoad: this.handleImgLoad
-	          })
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ImageDiff--swiper', style: swiperStyle },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'ImageDiff__after', style: afterStyle },
-	            _react2.default.createElement('img', {
-	              src: this.props.after,
-	              height: this.props.height,
-	              width: this.props.width,
-	              onLoad: this.handleImgLoad
-	            })
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return ImageDiff;
-	}(_react.Component);
-
-	ImageDiff.propTypes = {
-	  after: _react.PropTypes.string.isRequired,
-	  before: _react.PropTypes.string.isRequired,
-	  height: _react.PropTypes.number,
-	  type: _react.PropTypes.string.isRequired,
-	  value: _react.PropTypes.number,
-	  width: _react.PropTypes.number
+	    },
+	    _react2.default.createElement(
+	      "div",
+	      {
+	        className: "ImageDiff",
+	        style: _extends({ display: "inline-block" }, imageStyle)
+	      },
+	      views[type] || views["difference"]
+	    ),
+	    slider ? _react2.default.createElement("input", {
+	      type: "range",
+	      min: "0",
+	      max: "1",
+	      step: "0.01",
+	      value: diffValue,
+	      onInput: function onInput(e) {
+	        return setDiffValue(e.target.value);
+	      }
+	    }) : null
+	  );
 	};
 
-	ImageDiff.defaultProps = {
-	  value: 1
-	};
+	exports.default = ImageDiff;
 
-	module.exports = ImageDiff;
-
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

@@ -1,190 +1,227 @@
-import React, { Component, PropTypes } from 'react';
+import React, { useState } from "react"
 
-const bgImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAABlBMVEX5+fn///8pDrwNAAAAFElEQVQI12NgsP/AQAz+f4CBGAwAJIIdTTn0+w0AAAAASUVORK5CYII=';
+const bgImage =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAABlBMVEX5+fn///8pDrwNAAAAFElEQVQI12NgsP/AQAz+f4CBGAwAJIIdTTn0+w0AAAAASUVORK5CYII="
 
-class ImageDiff extends Component {
-  constructor() {
-    super();
-    this.handleImgLoad = this.handleImgLoad.bind(this);
+const dimension = (x) => (isNaN(x) || !x ? null : x)
+
+const Difference = ({ before, after, height, width, alt, handleImgLoad }) => {
+  const style = {
+    position: "relative",
+  }
+  const beforeStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  }
+  const afterStyle = {
+    ...beforeStyle,
   }
 
-  componentWillMount() {
-    this.setState({
-      height: this.props.height,
-      width: this.props.width
-    });
+  return (
+    <div className="ImageDiff_inner--difference" style={style}>
+      <div className="ImageDiff__before" style={beforeStyle}>
+        <img
+          src={before}
+          alt={alt}
+          height={height}
+          width={width}
+          onLoad={handleImgLoad}
+        />
+      </div>
+      <div className="ImageDiff__after" style={afterStyle}>
+        <img
+          src={after}
+          alt={alt}
+          height={height}
+          width={width}
+          style={{ mixBlendMode: "difference" }}
+          onLoad={handleImgLoad}
+        />
+      </div>
+    </div>
+  )
+}
+
+const Fade = ({ before, after, height, width, alt, handleImgLoad, value }) => {
+  let style = {
+    backgroundImage: `url(${bgImage})`,
+    height,
+    width,
+    margin: 0,
+    position: "absolute",
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      height: nextProps.height || this.state.height,
-      width: nextProps.width || this.state.width
-    });
+  let beforeStyle = {
+    ...style,
   }
 
-  handleImgLoad(e) {
-    if (!this.props.height && !this.props.width) {
-      let {height, width} = e.target;
-      this.setState({
-        height, width
-      });
+  let afterStyle = {
+    opacity: 1 - value,
+    ...style,
+  }
+
+  return (
+    <div className="ImageDiff__inner--fade" style={style}>
+      <div className="ImageDiff__before" style={beforeStyle}>
+        <img
+          src={before}
+          alt=""
+          height={height}
+          width={width}
+          onLoad={handleImgLoad}
+        />
+      </div>
+      <div className="ImageDiff__after" style={afterStyle}>
+        <img
+          src={after}
+          alt={alt}
+          height={height}
+          width={width}
+          onLoad={handleImgLoad}
+        />
+      </div>
+    </div>
+  )
+}
+
+const Swipe = ({
+  before,
+  after,
+  height = 0,
+  width = 0,
+  alt = "",
+  handleImgLoad,
+  value,
+}) => {
+  let style = {
+    backgroundImage: `url(${bgImage})`,
+    width,
+    height,
+    margin: 0,
+    position: "absolute",
+  }
+
+  let beforeStyle = {
+    ...style,
+  }
+
+  let afterStyle = {
+    right: 0,
+    ...style,
+  }
+
+  let swipePadding = 2
+  let swiperStyle = {
+    borderLeft: "1px solid #999",
+    height: height + swipePadding,
+    margin: 0,
+    overflow: "hidden",
+    position: "absolute",
+    right: -swipePadding,
+    width: width * (1 - value),
+  }
+
+  return (
+    <div className="ImageDiff__inner--swipe" style={style}>
+      <div className="ImageDiff__before" style={beforeStyle}>
+        <img
+          src={before}
+          alt={alt}
+          height={dimension(height)}
+          width={dimension(width)}
+          onLoad={handleImgLoad}
+        />
+      </div>
+      <div className="ImageDiff--swiper" style={swiperStyle}>
+        <div className="ImageDiff__after" style={afterStyle}>
+          <img
+            src={after}
+            alt=""
+            height={dimension(height)}
+            width={dimension(width)}
+            onLoad={handleImgLoad}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const ImageDiff = (props) => {
+  const {
+    type,
+    height,
+    width,
+    value = 0,
+    style,
+    slider,
+    animate,
+    animation,
+  } = props
+  const [imageStyle, setImageStyle] = useState({ ...style, height, width })
+  const [diffValue, setDiffValue] = useState(value)
+
+  React.useEffect(() => {
+    if (animate || animation) {
+      const { start = diffValue, end = 1, step = 0.02, delay = 50 } =
+        animation || {}
+
+      if (
+        (value > end && start + step <= end) ||
+        (value < end && start + step >= end)
+      ) {
+        setDiffValue(end)
+      } else setTimeout(() => setDiffValue(start + step), delay)
+    }
+  }, [value, diffValue, animate, animation])
+
+  const handleImgLoad = (e) => {
+    if (!height && !width) {
+      const { height, width } = e.target
+      setImageStyle({ ...style, height, width })
     }
   }
 
-  render() {
-    return (
-      <div className='ImageDiff' style={{display: 'inline-block', height: this.state.height, width: this.state.width}}>
-        {this.props.type === 'difference' ? this.renderDifference() : null}
-        {this.props.type === 'fade' ? this.renderFade() : null}
-        {this.props.type === 'swipe' ? this.renderSwipe() : null}
-      </div>
-    );
+  const viewProps = {
+    ...props,
+    ...imageStyle,
+    value: diffValue,
+    handleImgLoad,
   }
 
-  renderDifference() {
-    const style = {
-      position: 'relative'
-    };
-    const beforeStyle = {
-      position: 'absolute',
-      top: 0,
-      left: 0
-    };
-    const afterStyle = {
-      ...beforeStyle
-    }
-
-    return (
-      <div className='ImageDiff_inner--difference' style={style}>
-        <div className='ImageDiff__before' style={beforeStyle}>
-          <img
-            src={this.props.before}
-            height={this.props.height}
-            width={this.props.width}
-            onLoad={this.handleImgLoad}
-          />
-        </div>
-        <div className='ImageDiff__after' style={afterStyle}>
-          <img
-            src={this.props.after}
-            height={this.props.height}
-            width={this.props.width}
-            style={{ mixBlendMode: 'difference' }}
-            onLoad={this.handleImgLoad}
-          />
-        </div>
-      </div>
-    );
+  const views = {
+    difference: <Difference {...viewProps} />,
+    fade: <Fade {...viewProps} />,
+    swipe: <Swipe {...viewProps} />,
   }
 
-  renderFade = () => {
-    let style = {
-      backgroundImage: `url(${bgImage})`,
-      height: this.state.height,
-      margin: 0,
-      position: 'absolute',
-      width: this.state.width
-    };
-
-    let beforeStyle = {
-      border: '1px solid #f77',
-      ...style
-    };
-
-    let afterStyle = {
-      border: '1px solid #63c363',
-      opacity: 1 - this.props.value,
-      ...style
-    };
-
-    return (
-      <div className='ImageDiff__inner--fade' style={style}>
-        <div className='ImageDiff__before' style={beforeStyle}>
-          <img
-            src={this.props.before}
-            height={this.props.height}
-            width={this.props.width}
-            onLoad={this.handleImgLoad}
-          />
-        </div>
-        <div className='ImageDiff__after' style={afterStyle}>
-          <img
-            src={this.props.after}
-            height={this.props.height}
-            width={this.props.width}
-            onLoad={this.handleImgLoad}
-          />
-        </div>
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: imageStyle.width,
+      }}
+    >
+      <div
+        className="ImageDiff"
+        style={{ display: "inline-block", ...imageStyle }}
+      >
+        {views[type] || views["difference"]}
       </div>
-    );
-  }
-
-  renderSwipe() {
-    let style = {
-      backgroundImage: `url(${bgImage})`,
-      height: this.state.height,
-      margin: 0,
-      position: 'absolute',
-      width: this.state.width
-    };
-
-    let beforeStyle = {
-      border: '1px solid #f77',
-      ...style
-    };
-
-    let afterStyle = {
-      border: '1px solid #63c363',
-      right: 0,
-      ...style
-    };
-
-    let swiperStyle = {
-      borderLeft: '1px solid #999',
-      height: this.state.height + 2,
-      margin: 0,
-      overflow: 'hidden',
-      position: 'absolute',
-      right: -2,
-      width: this.state.width * (1 - this.props.value)
-    };
-
-    return (
-      <div className='ImageDiff__inner--swipe' style={style}>
-        <div className='ImageDiff__before' style={beforeStyle}>
-          <img
-            src={this.props.before}
-            height={this.props.height}
-            width={this.props.width}
-            onLoad={this.handleImgLoad}
-          />
-        </div>
-        <div className='ImageDiff--swiper' style={swiperStyle}>
-          <div className='ImageDiff__after' style={afterStyle}>
-            <img
-              src={this.props.after}
-              height={this.props.height}
-              width={this.props.width}
-              onLoad={this.handleImgLoad}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+      {slider ? (
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={diffValue}
+          onInput={(e) => setDiffValue(e.target.value)}
+        />
+      ) : null}
+    </div>
+  )
 }
 
-ImageDiff.propTypes = {
-  after: PropTypes.string.isRequired,
-  before: PropTypes.string.isRequired,
-  height: PropTypes.number,
-  type: PropTypes.string.isRequired,
-  value: PropTypes.number,
-  width: PropTypes.number
-};
-
-ImageDiff.defaultProps = {
-  value: 1
-}
-
-module.exports = ImageDiff;
+export default ImageDiff

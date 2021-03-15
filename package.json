@@ -1,6 +1,6 @@
 {
   "name": "react-image-diff",
-  "version": "0.1.0",
+  "version": "0.1.0-1",
   "description": "Highlight differences between images",
   "main": "dist/react-image-diff.js",
   "scripts": {
@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/cezary/react-image-diff",
   "peerDependencies": {
-    "react": ">=0.14.0",
-    "react-dom": ">=0.14.0"
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
   },
   "devDependencies": {
     "babel-loader": "^6.2.4",
